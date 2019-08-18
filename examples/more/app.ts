@@ -2,6 +2,7 @@ import axios from '../../src/index'
 import 'nprogress/nprogress.css'
 import NProgress from "nprogress"
 import { AxiosError } from '../../src/types'
+var qs = require('qs')
 // document.cookie = 'a=b'
 // axios.get('/more/get').then(res => {
 //   console.log(res)
@@ -80,18 +81,85 @@ import { AxiosError } from '../../src/types'
 //     console.log(res)
 //   })
 
-axios.get('/more/304').then(res => {
-  console.log(res)
-}).catch((e: AxiosError) => {
-  console.log(e.message)
+// axios.get('/more/304').then(res => {
+//   console.log(res)
+// }).catch((e: AxiosError) => {
+//   console.log(e.message)
+// })
+// axios.get('/more/304', {
+//   validateStatus(status) {
+//     return status >= 200 && status < 400
+//   }
+// }).then(res => {
+//   console.log('validateStatus')
+//   console.log(res)
+// }).catch((e: AxiosError) => {
+//   console.log(e.message)
+// })
+
+// axios.get('/more/get', {
+//   params: new URLSearchParams('a=b&c=d')
+// }).then(res => {
+//   console.log(res)
+// })
+
+// axios.get('/more/get', {
+//   params: {
+//     a: 1,
+//     b: 2,
+//     c: ['a', 'b', 'c']
+//   }
+// }).then(res => {
+//   console.log(res)
+// })
+
+// const instance = axios.create({
+//   paramsSerializer(params) {
+//     return qs.stringify(params, {
+//       arrayFormat: 'brackets'
+//     })
+//   }
+// })
+// instance.get('/more/get', {
+//   params: {
+//     a: 1,
+//     b: 2,
+//     c: ['a', 'b', 'c']
+//   }
+// }).then(res => {
+//   console.log(res)
+// })
+
+// const instance = axios.create({
+//   baseURL: 'https://img.mukewang.com/szimg/'
+// })
+// instance.get('5becd5ad000ab89306000338-360-202.jpg')
+// instance.get('https://img.mukewang.com/szimg/5becd5ad000ab89306000338-360-202.jpg')
+
+function getA() {
+  return axios.get('/more/A')
+}
+function getB() {
+  return axios.get('/more/B')
+}
+axios.all([getA(), getB()]).then(
+  axios.spread(function (resA, resB) {
+    console.log(resA.data)
+    console.log(resB.data)
+  })
+)
+axios.all([getA(), getB()]).then(([resA, resB]) => {
+  console.log(resA.data)
+  console.log(resB.data)
 })
-axios.get('/more/304', {
-  validateStatus(status) {
-    return status >= 200 && status < 400
+
+const fakeConfig = {
+  baseURL: 'https://www.baidu.com',
+  url: '/user/12345',
+  params: {
+    idClient: 3,
+    idTest: 2,
+    tsetString: 'thisIsATest'
   }
-}).then(res => {
-  console.log('validateStatus')
-  console.log(res)
-}).catch((e: AxiosError) => {
-  console.log(e.message)
-})
+}
+console.log(axios.getUri(fakeConfig))
